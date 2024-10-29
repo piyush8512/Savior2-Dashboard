@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Stock Market Trend Predictor</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            margin: auto;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        input[type="number"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+        #decision {
+            font-weight: bold;
+            color: #007bff;
+        }
+        canvas {
+            margin-top: 20px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Plant Stock Market Trend Predictor</h1>
+    <form id="dataForm">
+        <label for="case">Select Case:</label>
+        <select id="case">
+            <option value="A">Case A</option>
+            <option value="B">Case B</option>
+            <option value="C">Case C</option>
+            <option value="D">Case D</option>
+            <option value="E">Case E</option>
+        </select>
+        
+        <label for="revenue">Revenue (INR):</label>
+        <input type="number" id="revenue" placeholder="Enter revenue" required>
+        
+        <label for="cost">Cost (INR):</label>
+        <input type="number" id="cost" placeholder="Enter cost" required>
+        
+        <label for="productionVolume">Production Volume (Watt) :</label>
+        <input type="number" id="productionVolume" placeholder="Enter production volume" required>
+
+        <button type="submit">Add Data</button>
+    </form>
+    
+    <h2>Regression Decision: <span id="decision"></span></h2>
+    <canvas id="regressionChart"></canvas>
+
+    <script src="https://cdn.jsdelivr.net/npm/regression"></script>
+    <script>
+        const cases = {
+            A: generateSyntheticData(10, 2, 1),     // slope = 2, intercept = 1
+            B: generateSyntheticData(10, 1.5, 5),   // slope = 1.5, intercept = 5
+            C: generateSyntheticData(10, 1, 10),    // slope = 1, intercept = 10
+            D: generateSyntheticData(10, 2.5, 15),  // slope = 2.5, intercept = 15
+            E: generateSyntheticData(10, 0.5, 20)   // slope = 0.5, intercept = 20
+        };
+
+        const chartData = {
+            labels: [],
+            datasets: []
+        };
+
+        const ctx = document.getElementById('regressionChart').getContext('2d');
+        const regressionChart = new Chart(ctx, {
+            type: 'scatter',
+            data: chartData,
+            options: {
+                scales: {
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Production Volume',
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Revenue',
+                        }
+                    }
+                }
+            }
+        });
+
+        // Add datasets for each case
+        Object.keys(cases).forEach(caseKey => {
+            const caseData = cases[caseKey];
+            addDataSet(caseData, caseKey);
+        });
+
+        document.getElementById('dataForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const selectedCase = document.getElementById('case').value;
+            const revenue = parseFloat(document.getElementById('revenue').value);
+            const cost = parseFloat(document.getElementById('cost').value);
+            const productionVolume = parseFloat(document.getElementById('productionVolume').value);
+            
+            // Push data point
+            addDataPoint(selectedCase, productionVolume, revenue);
+            const decision = makeDecision(revenue, cost);
+            document.getElementById('decision').innerText = decision;
+
+            // Reset form
+            document.getElementById('dataForm').reset();
+        });
+
+        function generateSyntheticData(numPoints, slope, intercept) {
+            const data = [];
+            for (let i = 1; i <= numPoints; i++) {
+                const productionVolume = i * 10; // Incremental production volume
+                const revenue = slope * productionVolume + intercept + Math.random() * 10; // Simulated revenue with some noise
+                data.push([productionVolume, revenue]);
+            }
+            return data;
+        }
+
+        function makeDecision(revenue, cost) {
+            const profitMargin = (revenue - cost) / revenue;
+
+            if (profitMargin > 0.2) {
+                return "Buy";
+            } else if (profitMargin < 0.1) {
+                return "Sell";
+            } else {
+                return "Hold";
+            }
+        }
+
+        function addDataSet(data, caseKey) {
+            // const dataset = {
+            //     label: Case ${caseKey},
+            //     backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            //     borderColor: 'rgba(75, 192, 192, 1)',
+            //     data: []
+            // };
+
+            data.forEach(point => {
+                dataset.data.push({ x: point[0], y: point[1] });
+            });
+            chartData.datasets.push(dataset);
+            addRegressionLine(data, caseKey);
+        }
+
+        function addDataPoint(caseKey, productionVolume, revenue) {
+            const caseData = cases[caseKey];
+            caseData.push([productionVolume, revenue]);
+            const datasetIndex = chartData.datasets.findIndex(ds => ds.label === Case ${caseKey});
+            chartData.datasets[datasetIndex].data.push({ x: productionVolume, y: revenue });
+
+            // Update regression line
+            addRegressionLine(caseData, caseKey);
+            regressionChart.update();
+        }
+
+        function addRegressionLine(data, caseKey) {
+            const result = regression.linear(data);
+            const x1 = Math.min(...data.map(point => point[0]));
+            const x2 = Math.max(...data.map(point => point[0]));
+            const y1 = result.equation[0] * x1 + result.equation[1];
+            const y2 = result.equation[0] * x2 + result.equation[1];
+
+            // Add regression line dataset
+            // const regressionDataset = {
+            //     label: Regression Line ${caseKey},
+            //     borderColor: 'rgba(255, 99, 132, 1)',
+            //     data: [
+            //         { x: x1, y: y1 },
+            //         { x: x2, y: y2 }
+            //     ],
+            //     fill: false
+            // };
+
+            // Remove existing regression line if it exists
+            const existingIndex = chartData.datasets.findIndex(ds => ds.label === Regression Line ${caseKey});
+            if (existingIndex !== -1) {
+                chartData.datasets.splice(existingIndex, 1);
+            }
+
+            chartData.datasets.push(regressionDataset);
+        }
+    </script>
+</body>
+</html>

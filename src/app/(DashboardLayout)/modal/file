@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar Panel Prediction</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        #inputForm {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            margin: auto;
+            max-width: 600px;
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input[type="number"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #218838;
+        }
+
+        canvas {
+            margin-top: 20px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Solar Panel Prediction</h1>
+    <form id="inputForm">
+        <label for="solar_irradiance">Solar Irradiance (kW/m²):</label>
+        <input type="number" id="solar_irradiance" step="0.1" min="0" title="The power of solar radiation received per unit area." required>
+
+        <label for="panel_area">Panel Area (m²):</label>
+        <input type="number" id="panel_area" min="0" title="The surface area of the solar panel in square meters." required>
+
+        <label for="efficiency">Efficiency (%):</label>
+        <input type="number" id="efficiency" step="0.01" min="0" max="1" title="The percentage of solar energy converted into usable energy." required>
+
+        <label for="latitude">Latitude:</label>
+        <input type="number" id="latitude" title="The geographical latitude of the location." required>
+
+        <label for="longitude">Longitude:</label>
+        <input type="number" id="longitude" title="The geographical longitude of the location." required>
+
+        <label for="grid_emission_factor">Grid Emission Factor (kg CO2/kWh):</label>
+        <input type="number" id="grid_emission_factor" step="0.01" min="0" title="The amount of CO2 emitted per kWh of electricity consumed from the grid." required>
+
+        <button type="submit">Predict</button>
+    </form>
+
+    <canvas id="myChart" width="400" height="200"></canvas>
+
+    <script>
+        // Store dataset in local storage
+        const dataValues = {
+            solar_irradiance: [5.0, 6.5, 4.8, 5.2, 6.0, 7.1, 5.5, 3.8, 4.5, 7.5,
+                               6.2, 5.8, 4.0, 6.3, 7.0, 5.4, 6.1, 3.9, 4.6, 5.9,
+                               6.8, 5.3, 4.2, 7.6, 5.7, 6.9, 3.5, 4.3, 5.1, 6.4,
+                               7.2, 5.6, 6.5, 4.9, 5.8, 7.4, 6.7, 5.0, 3.6, 4.8,
+                               6.1, 5.9, 7.0, 5.3, 4.5, 6.2, 7.3, 4.1, 5.4, 6.0],
+            panel_area: [100, 200, 150, 175, 225, 300, 50, 400, 350, 125,
+                         275, 90, 120, 180, 160, 300, 200, 110, 230, 160,
+                         250, 190, 180, 230, 210, 220, 140, 170, 260, 180,
+                         230, 150, 140, 160, 250, 190, 180, 220, 200, 170,
+                         160, 150, 210, 220, 240, 130, 170, 190, 200, 180],
+            efficiency: [0.18, 0.19, 0.20, 0.17, 0.15, 0.20, 0.21, 0.16, 0.19, 0.20,
+                         0.17, 0.18, 0.16, 0.20, 0.21, 0.19, 0.20, 0.18, 0.17, 0.21,
+                         0.19, 0.20, 0.18, 0.17, 0.16, 0.20, 0.21, 0.19, 0.20, 0.18,
+                         0.21, 0.20, 0.19, 0.16, 0.18, 0.19, 0.20, 0.17, 0.16, 0.21,
+                         0.19, 0.20, 0.21, 0.18, 0.19, 0.20, 0.18, 0.17, 0.19, 0.20],
+            latitude: [30.0, 31.5, 28.0, 29.5, 32.0, 33.1, 30.5, 34.0, 35.0, 36.5,
+                       29.0, 30.3, 31.2, 28.5, 29.8, 32.5, 33.6, 34.1, 30.1, 36.0,
+                       30.7, 31.8, 28.5, 29.1, 32.2, 33.3, 30.0, 34.2, 35.4, 36.6,
+                       29.1, 30.8, 31.9, 28.7, 29.5, 32.4, 33.5, 34.3, 30.2, 36.1,
+                       30.6, 31.4, 28.2, 29.7, 32.1, 33.9, 30.4, 34.5, 35.8, 36.7],
+            longitude: [-95.0, -94.5, -93.0, -92.5, -91.0, -90.5, -89.0, -88.5, -87.0, -86.5,
+                        -95.5, -94.0, -93.5, -92.0, -91.5, -90.0, -89.5, -88.0, -87.5, -86.0,
+                        -95.2, -94.8, -93.6, -92.7, -91.8, -90.1, -89.3, -88.9, -87.1, -86.3,
+                        -95.3, -94.1, -93.7, -92.4, -91.3, -90.8, -89.2, -88.7, -87.3, -86.4,
+                        -95.1, -94.7, -93.3, -92.2, -91.6, -90.3, -89.4, -88.8, -87.8, -86.7],
+            grid_emission_factor: [0.5, 0.4, 0.6, 0.3, 0.5, 0.4, 0.7, 0.6, 0.5, 0.3,
+                                   0.4, 0.6, 0.3, 0.5, 0.7, 0.4, 0.3, 0.5, 0.6, 0.4,
+                                   0.5, 0.4, 0.6, 0.7, 0.3, 0.5, 0.4, 0.6, 0.5, 0.4,
+                                   0.7, 0.5, 0.3, 0.6, 0.4, 0.5, 0.7, 0.3, 0.6, 0.4,
+                                   0.5, 0.6, 0.4, 0.3, 0.5, 0.7, 0.4, 0.6, 0.5, 0.3],
+        };
+
+        localStorage.setItem("solarPanelData", JSON.stringify(dataValues));
+
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ["Irradiance", "Panel Area", "Efficiency", "Latitude", "Longitude", "Grid Emission Factor"],
+                datasets: [{
+                    label: 'Input Values',
+                    data: [0, 0, 0, 0, 0, 0],
+                    backgroundColor: [
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)',
+                        'rgba(255, 159, 64, 0.2)',
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)',
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        document.getElementById('inputForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const solar_irradiance = parseFloat(document.getElementById('solar_irradiance').value);
+            const panel_area = parseFloat(document.getElementById('panel_area').value);
+            const efficiency = parseFloat(document.getElementById('efficiency').value);
+            const latitude = parseFloat(document.getElementById('latitude').value);
+            const longitude = parseFloat(document.getElementById('longitude').value);
+            const grid_emission_factor = parseFloat(document.getElementById('grid_emission_factor').value);
+
+            // Update chart data
+            myChart.data.datasets[0].data = [solar_irradiance, panel_area, efficiency, latitude, longitude, grid_emission_factor];
+            myChart.update();
+        });
+    </script>
+</body>
+</html>
