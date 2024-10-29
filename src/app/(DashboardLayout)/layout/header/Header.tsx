@@ -62,11 +62,7 @@ const Header = ({toggleMobileSidebar}: ItemType) => {
         </IconButton>
         <Box flexGrow={1} />
         
-        <Stack spacing={2} direction="row" alignItems="center" className="relative" style={{ marginRight: '16px' }}>
-  <Button variant="contained" component={Link} href="/calculator" disableElevation color="primary">
-    Calculator
-  </Button>
-</Stack>
+        
 
 <Stack spacing={2} direction="row" alignItems="center">
   <Button variant="contained" component={Link} href="/authentication/login" disableElevation color="primary">

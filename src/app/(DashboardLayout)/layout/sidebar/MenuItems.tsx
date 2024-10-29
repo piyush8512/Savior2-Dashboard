@@ -39,6 +39,12 @@ const Menuitems = [
     href: "/utilities/shadow",
   },
   {
+    id: uniqueId(),
+    title: "Calculator",
+    icon: IconCopy,
+    href: "/utilities/calculator",
+  },
+  {
     navlabel: true,
     subheader: "Auth",
   },
