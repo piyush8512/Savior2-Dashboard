@@ -10,6 +10,7 @@ import { heroIcons } from "../constants";
 import { ScrollParallax } from "react-just-parallax";
 import { heroBackground } from "../assets";
 import { BackgroundCircles } from "./design/Hero";
+import Image from "next/image";
 
 const Hero = () => {
   const parallaxRef = useRef(null);
@@ -24,10 +25,9 @@ const Hero = () => {
       <div className="container relative" ref={parallaxRef}>
         <div className="relative z-1 max-w-[62rem] mx-auto text-center mb-[4rem] md:mb-20 lg:mb-[6.25rem]">
           <h1 className="h1 mb-6">
-            {" "}
-            Let's charge the nation&nbsp; with {` `}
+            Let's charge the nation with
             <span className="inline-block relative">
-              EnergX{" "}
+              EnergX
               <Image
                 src={curve}
                 alt="curve"
