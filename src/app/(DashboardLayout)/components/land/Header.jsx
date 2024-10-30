@@ -44,7 +44,7 @@ const Header = () => {
     >
       <div className="flex items-center px-5 lg:px-7.5 xl:px-10 max-lg:py-4">
         <a className="flex gap-4 w-[12rem] xl:mr-8" href="#hero">
-          <img src={EnergX} width={30} height={30} alt="EnergX" />
+          <Image src={EnergX} width={30} height={30} alt="EnergX" />
           <span className="text-3xl font-bold font-sans">EnergX</span>
         </a>
 
@@ -82,8 +82,8 @@ const Header = () => {
         >
           New account
         </a>
-            {/* <Link to="/sign-up">Sign Up</Link> */}
-            <Button
+        {/* <Link to="/sign-up">Sign Up</Link> */}
+        <Button
           onClick={handlenavigation}
           className="hidden lg:flex"
           href="/Signin"

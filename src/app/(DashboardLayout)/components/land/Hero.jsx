@@ -2,15 +2,14 @@ import { useRef } from "react";
 import Section from "./Section";
 import Button from "./Button";
 import { curve, robot } from "../assets";
-import { BottomLine, Gradient} from "./design/Hero";
+import { BottomLine, Gradient } from "./design/Hero";
 // import CompanyLogos from "./CompanyLogos";
 import Generating from "./Generating";
 import Notification from "./Notification";
 import { heroIcons } from "../constants";
 import { ScrollParallax } from "react-just-parallax";
-import {  heroBackground } from "../assets";
+import { heroBackground } from "../assets";
 import { BackgroundCircles } from "./design/Hero";
-
 
 const Hero = () => {
   const parallaxRef = useRef(null);
@@ -29,7 +28,7 @@ const Hero = () => {
             Let's charge the nation&nbsp; with {` `}
             <span className="inline-block relative">
               EnergX{" "}
-              <img
+              <Image
                 src={curve}
                 alt="curve"
                 className="absolute top-full left-0 w-full xl:-mt-2"
@@ -40,9 +39,10 @@ const Hero = () => {
           </h1>
           <p className="body-1 max-w-3xl mx-auto text-n-2">
             Unleash the power of Solar within EnergX.
-          </p><p className="body-1 max-w-3xl mx-auto mb-6 text-n-2 lg:mb-8">
+          </p>
+          <p className="body-1 max-w-3xl mx-auto mb-6 text-n-2 lg:mb-8">
             Invest, Trade & Presreve
-            </p>
+          </p>
           <Button href="pricing" white>
             {" "}
             Get Started
@@ -54,7 +54,7 @@ const Hero = () => {
               <div className="h-[1.4rem] bg-n-10 rounded-t-[0.9rem]" />
               <div className="aspect-[33/40] rounded-b-[0.9rem] overflow-hidden md:aspect-[688/490] lg:aspect-[1024/490]">
                 {" "}
-                <img
+                <Image
                   src={robot}
                   className="w-full scale-[1.7] translate-y-[8%] md:scale-[1] md:-translate-y-[10%] lg:-translate-y-[23%]"
                   width={1024}
@@ -66,7 +66,7 @@ const Hero = () => {
                   <ul className="hidden absolute -left-[5.5rem] bottom-[7.5rem] px-1 py-1 bg-n-9/40 backdrop-blur border border-n-1/10 rounded-2xl xl:flex">
                     {heroIcons.map((icon, index) => (
                       <li className="p-5" key={index}>
-                        <img src={icon} alt={icon} width={24} height={25} />
+                        <Image src={icon} alt={icon} width={24} height={25} />
                       </li>
                     ))}
                   </ul>
@@ -82,7 +82,7 @@ const Hero = () => {
             <Gradient />
           </div>
           <div className="absolute -top-[54%] left-1/2 w-[234%] -translate-x-1/2 md:-top-[46%] md:w-[138%] lg:-top-[104%]">
-            <img
+            <Image
               src={heroBackground}
               className="w-full"
               alt="heroBackground"
@@ -93,7 +93,6 @@ const Hero = () => {
           <ScrollParallax isAbsolutelyPositioned>
             <BackgroundCircles />
           </ScrollParallax>
-    
         </div>
         {/* <CompanyLogos className="hidden relative z-10 mt-20 lg:block" /> */}
       </div>

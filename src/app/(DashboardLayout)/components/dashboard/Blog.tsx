@@ -1,4 +1,3 @@
-
 import Link from "next/link";
 import {
   CardContent,
@@ -7,12 +6,12 @@ import {
   Rating,
   Tooltip,
   Fab,
-  Avatar
+  Avatar,
 } from "@mui/material";
-// import img1 from "public/images/products/s4.jpg";
-// import img2 from "public/images/products/s5.jpg";
-// import img3 from "public/images/products/s7.jpg";
-// import img4 from "public/images/products/s11.jpg";
+// import Image1 from "public/images/products/s4.jpg";
+// import Image2 from "public/images/products/s5.jpg";
+// import Image3 from "public/images/products/s7.jpg";
+// import Image4 from "public/images/products/s11.jpg";
 import { Stack } from "@mui/system";
 import { IconBasket } from "@tabler/icons-react";
 import BlankCard from "@/app/(DashboardLayout)/components/shared/BlankCard";
@@ -22,32 +21,32 @@ const ecoCard = [
   {
     title: "RoofTop Solution ",
     subheader: "September 14, 2023",
-    photo: '/images/products/s4.jpg',
-   
+    photo: "/images/products/s4.jpg",
+
     price: 285,
     rating: 4,
   },
   {
     title: "Solar Water Heater",
     subheader: "September 14, 2023",
-    photo: '/images/products/s5.jpg',
-    
+    photo: "/images/products/s5.jpg",
+
     price: 900,
     rating: 5,
   },
   {
     title: "PV module",
     subheader: "September 14, 2023",
-    photo: '/images/products/s7.jpg',
-   
+    photo: "/images/products/s7.jpg",
+
     price: 200,
     rating: 3,
-  },  
+  },
   {
     title: "TopCon Module",
     subheader: "September 14, 2023",
-    photo: '/images/products/s11.jpg',
-    
+    photo: "/images/products/s11.jpg",
+
     price: 345,
     rating: 2,
   },
@@ -61,15 +60,15 @@ const Blog = () => {
           <BlankCard>
             <Typography component={Link} href="/">
               <Avatar
-                src={product.photo} variant="square"
+                src={product.photo}
+                variant="square"
                 sx={{
                   height: 250,
-                  width: '100%',
+                  width: "100%",
                 }}
-                
               />
             </Typography>
-            
+
             <CardContent sx={{ p: 3, pt: 2 }}>
               <Typography variant="h6">{product.title}</Typography>
               <Stack
