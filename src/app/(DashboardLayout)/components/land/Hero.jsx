@@ -25,7 +25,7 @@ const Hero = () => {
       <div className="container relative" ref={parallaxRef}>
         <div className="relative z-1 max-w-[62rem] mx-auto text-center mb-[4rem] md:mb-20 lg:mb-[6.25rem]">
           <h1 className="h1 mb-6">
-            Let's charge the nation with
+            Lets charge the nation with
             <span className="inline-block relative">
               EnergX
               <Image
@@ -44,7 +44,7 @@ const Hero = () => {
             Invest, Trade & Presreve
           </p>
           <Button href="pricing" white>
-            {" "}
+            
             Get Started
           </Button>
         </div>
@@ -53,7 +53,7 @@ const Hero = () => {
             <div className="relative bg-n-8 rounded-[1rem]">
               <div className="h-[1.4rem] bg-n-10 rounded-t-[0.9rem]" />
               <div className="aspect-[33/40] rounded-b-[0.9rem] overflow-hidden md:aspect-[688/490] lg:aspect-[1024/490]">
-                {" "}
+                
                 <Image
                   src={robot}
                   className="w-full scale-[1.7] translate-y-[8%] md:scale-[1] md:-translate-y-[10%] lg:-translate-y-[23%]"

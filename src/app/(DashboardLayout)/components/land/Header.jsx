@@ -1,7 +1,7 @@
 import { useLocation } from "react-router-dom";
 import { disablePageScroll, enablePageScroll } from "scroll-lock";
 import { useNavigate } from "react-router-dom";
-
+import Image from "next/image";
 import { EnergX } from "../assets";
 import { navigation } from "../constants";
 import Button from "./Button";

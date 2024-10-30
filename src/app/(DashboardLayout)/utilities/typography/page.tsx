@@ -35,7 +35,7 @@ const SocialPost: React.FC = () => {
         {/* Post Text */}
         <div className="mt-4">
           <p className="text-gray-700">
-            I'm so glad to share with you guys some photos from my recent trip to New York.
+            Im so glad to share with you guys some photos from my recent trip to New York.
             This city looks amazing, the buildings, nature, people all are beautiful. I highly recommend
             visiting this cool place! Also, I would like to know what is your favorite place here or what
             you would like to visit? 😍

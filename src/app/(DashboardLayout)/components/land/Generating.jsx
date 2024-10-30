@@ -1,4 +1,5 @@
 import { loading } from "../assets";
+import Image from "next/image";
 
 const Generating = ({ className }) => {
   return (
